@@ -27,8 +27,8 @@ This is the first of three planned pieces of a larger platform:
 
 ### With Maven command line
 ```sh
-git clone https://github.com/vinceo8691-prog/my-petclinic-ai-platform.git
-cd my-petclinic-ai-platform
+git clone https://github.com/vinceo8691-prog/petclinic-ai-platform.git
+cd petclinic-ai-platform
 ./mvnw spring-boot:run
 ```
 
@@ -36,7 +36,7 @@ cd my-petclinic-ai-platform
 Build and run a local image (no image is currently published to a registry for this fork):
 ```sh
 ./mvnw compile jib:dockerBuild
-docker run -p 9966:9966 my-petclinic-ai-platform
+docker run -p 9966:9966 vinceo8691/petclinic-api
 ```
 
 You can then access petclinic here: [http://localhost:9966/petclinic/](http://localhost:9966/petclinic/)
@@ -266,7 +266,7 @@ If m2e is not there, just follow the install process here: http://eclipse.org/m2
 
 1) In the command line
 ```sh
-git clone https://github.com/vinceo8691-prog/my-petclinic-ai-platform.git
+git clone https://github.com/vinceo8691-prog/petclinic-ai-platform.git
 ```
 2) Inside Eclipse
 ```

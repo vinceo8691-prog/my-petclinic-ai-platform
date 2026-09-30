@@ -8,7 +8,7 @@
     <version>4.0.2</version>
 
     <description>REST API backend for the PetClinic AI Platform</description>
-    <url>https://github.com/vinceo8691-prog/my-petclinic-ai-platform</url>
+    <url>https://github.com/vinceo8691-prog/petclinic-ai-platform</url>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
