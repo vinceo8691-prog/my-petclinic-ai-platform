@@ -14,16 +14,30 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.repository;
 
-import org.springframework.samples.petclinic.model.PetType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import org.springframework.samples.petclinic.model.Pet;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
-public interface PetTypeRepositoryOverride {
-	
-	void delete(PetType petType);
+public class PetRepositoryImpl implements PetRepositoryOverride {
+
+	@PersistenceContext
+    private EntityManager em;
+
+	@Override
+	public void delete(Pet pet) {
+		String petId = pet.getId().toString();
+		this.em.createQuery("DELETE FROM Visit visit WHERE pet.id=" + petId).executeUpdate();
+		this.em.createQuery("DELETE FROM Pet pet WHERE id=" + petId).executeUpdate();
+        if (em.contains(pet)) {
+            em.remove(pet);
+        }
+	}
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -26,7 +26,7 @@ import org.springframework.samples.petclinic.model.Visit;
  * @author Vitaliy Fedoriv
  *
  */
-public class SpringDataVisitRepositoryImpl implements VisitRepositoryOverride {
+public class VisitRepositoryImpl implements VisitRepositoryOverride {
 
 	@PersistenceContext
     private EntityManager em;

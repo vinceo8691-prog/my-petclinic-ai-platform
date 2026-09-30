@@ -20,12 +20,14 @@ import java.util.Collection;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Owner;
 
 /**
- * Repository class for <code>Owner</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * Spring Data JPA repository for <code>Owner</code> domain objects.
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
@@ -33,7 +35,7 @@ import org.springframework.samples.petclinic.model.Owner;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface OwnerRepository {
+public interface OwnerRepository extends Repository<Owner, Integer> {
 
     /**
      * Retrieve <code>Owner</code>s from the data store by last name, returning all owners whose last name <i>starts</i>
@@ -43,9 +45,13 @@ public interface OwnerRepository {
      * @return a <code>Collection</code> of matching <code>Owner</code>s (or an empty <code>Collection</code> if none
      * found)
      */
-    Collection<Owner> findByLastName(String lastName) throws DataAccessException;
+    @Query("SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE :lastName%")
+    Collection<Owner> findByLastName(@Param("lastName") String lastName);
 
-    Page<Owner> findByLastName(String lastName, Pageable pageable) throws DataAccessException;
+    @Query(
+        value = "SELECT owner FROM Owner owner WHERE owner.lastName LIKE CONCAT(:lastName, '%')",
+        countQuery = "SELECT COUNT(owner) FROM Owner owner WHERE owner.lastName LIKE CONCAT(:lastName, '%')")
+    Page<Owner> findByLastName(@Param("lastName") String lastName, Pageable pageable);
 
     /**
      * Retrieve an <code>Owner</code> from the data store by id.
@@ -54,8 +60,8 @@ public interface OwnerRepository {
      * @return the <code>Owner</code> if found
      * @throws org.springframework.dao.DataRetrievalFailureException if not found
      */
-    Owner findById(int id) throws DataAccessException;
-
+    @Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
+    Owner findById(@Param("id") int id);
 
     /**
      * Save an <code>Owner</code> to the data store, either inserting or updating it.
@@ -64,24 +70,26 @@ public interface OwnerRepository {
      * @see BaseEntity#isNew
      */
     void save(Owner owner) throws DataAccessException;
-    
+
     /**
-     * Retrieve <code>Owner</code>s from the data store, returning all owners 
+     * Retrieve <code>Owner</code>s from the data store, returning all owners
      *
      * @return a <code>Collection</code> of <code>Owner</code>s (or an empty <code>Collection</code> if none
      * found)
      */
-	Collection<Owner> findAll() throws DataAccessException;
+    Collection<Owner> findAll() throws DataAccessException;
 
-    Page<Owner> findAll(Pageable pageable) throws DataAccessException;
-	
+    @Query(
+        value = "SELECT owner FROM Owner owner",
+        countQuery = "SELECT COUNT(owner) FROM Owner owner")
+    Page<Owner> findAll(Pageable pageable);
+
     /**
      * Delete an <code>Owner</code> to the data store by <code>Owner</code>.
      *
      * @param owner the <code>Owner</code> to delete
-     * 
+     *
      */
-	void delete(Owner owner) throws DataAccessException;
-
+    void delete(Owner owner) throws DataAccessException;
 
 }

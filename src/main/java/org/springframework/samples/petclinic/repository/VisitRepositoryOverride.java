@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.repository;
 
-import org.springframework.data.repository.Repository;
-import org.springframework.samples.petclinic.model.Specialty;
-import org.springframework.samples.petclinic.repository.SpecialtyRepository;
-
+import org.springframework.samples.petclinic.model.Visit;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
-public interface SpringDataSpecialtyRepository extends SpecialtyRepository, Repository<Specialty, Integer>, SpecialtyRepositoryOverride {
+public interface VisitRepositoryOverride {
+
+	void delete(Visit visit);
 
 }

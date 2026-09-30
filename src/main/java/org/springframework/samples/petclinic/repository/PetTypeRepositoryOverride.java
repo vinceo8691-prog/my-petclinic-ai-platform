@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.repository.springdatajpa;
 
-import org.springframework.data.repository.Repository;
-import org.springframework.samples.petclinic.model.Visit;
-import org.springframework.samples.petclinic.repository.VisitRepository;
+package org.springframework.samples.petclinic.repository;
+
+import org.springframework.samples.petclinic.model.PetType;
 
 /**
- * Spring Data JPA specialization of the {@link VisitRepository} interface
- *
- * @author Michael Isvy
  * @author Vitaliy Fedoriv
+ *
  */
-public interface SpringDataVisitRepository extends VisitRepository, Repository<Visit, Integer>, VisitRepositoryOverride {
+public interface PetTypeRepositoryOverride {
+
+	void delete(PetType petType);
+
 }

@@ -21,14 +21,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.repository.Repository;
 import org.springframework.samples.petclinic.model.Specialty;
 
 /**
+ * Spring Data JPA repository for <code>Specialty</code> domain objects.
+ *
  * @author Vitaliy Fedoriv
  *
  */
-
-public interface SpecialtyRepository {
+public interface SpecialtyRepository extends Repository<Specialty, Integer>, SpecialtyRepositoryOverride {
 
 	Specialty findById(int id) throws DataAccessException;
 

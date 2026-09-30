@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.repository;
 
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author Vitaliy Fedoriv
  *
  */
-public class SpringDataPetTypeRepositoryImpl implements PetTypeRepositoryOverride {
+public class PetTypeRepositoryImpl implements PetTypeRepositoryOverride {
 
 	@PersistenceContext
     private EntityManager em;
