@@ -1,0 +1,799 @@
+{
+	"info": {
+		"_postman_id": "3a7d9e1c-4b2f-4a6e-8c9d-1f2e3a4b5c6d",
+		"name": "Petclinic - API Exploration",
+		"description": "Manual exploration collection covering every endpoint defined in src/main/resources/openapi.yml, organized by resource. Unlike petclinic-nonregressiontests.postman_collection.json (the scripted CI/Newman regression suite), this collection is meant for ad-hoc, interactive use against a locally running instance (`mvn spring-boot:run`, default port 9966, context path /petclinic).\n\nUsage:\n1. Select the 'Petclinic Exploration Env' environment.\n2. Run requests top-to-bottom within a folder: 'Create' requests capture the returned id into an environment variable (ownerId, petId, visitId, petTypeId, vetId, specialtyId) which subsequent requests in that folder reuse.\n3. If petclinic.security.enable=true, add Basic Auth credentials at the collection or request level.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Owners",
+			"item": [
+				{
+					"name": "List Owners",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Owners by Last Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners?lastName=Davis",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners" ],
+							"query": [
+								{ "key": "lastName", "value": "Davis" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Owners (Paginated v2)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v2/owners?page=0&size=5",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "v2", "owners" ],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "5" },
+								{ "key": "lastName", "value": "", "disabled": true }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('ownerId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Owner created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"George\",\n  \"lastName\": \"Franklin\",\n  \"address\": \"110 W. Liberty St.\",\n  \"city\": \"Madison\",\n  \"telephone\": \"6085551023\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"George\",\n  \"lastName\": \"Franklin Jr.\",\n  \"address\": \"110 W. Liberty St.\",\n  \"city\": \"Madison\",\n  \"telephone\": \"6085551023\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Owner",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Owner's Pets & Visits (nested)",
+			"item": [
+				{
+					"name": "Add Pet to Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('petId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Pet created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Leo\",\n  \"birthDate\": \"2010-09-07\",\n  \"type\": {\n    \"id\": 1,\n    \"name\": \"cat\"\n  }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}/pets",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}", "pets" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner's Pet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}/pets/{{petId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}", "pets", "{{petId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner's Pet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Leo\",\n  \"birthDate\": \"2010-09-07\",\n  \"type\": {\n    \"id\": 1,\n    \"name\": \"cat\"\n  }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}/pets/{{petId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}", "pets", "{{petId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Visit to Owner's Pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('visitId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Visit created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"date\": \"2024-03-15\",\n  \"description\": \"Rabies shot\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/{{ownerId}}/pets/{{petId}}/visits",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "owners", "{{ownerId}}", "pets", "{{petId}}", "visits" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pets",
+			"item": [
+				{
+					"name": "List Pets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pets" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Pets (Paginated v2)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v2/pets?page=0&size=5",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "v2", "pets" ],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "5" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pet by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/{{petId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pets", "{{petId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Leo\",\n  \"birthDate\": \"2010-09-07\",\n  \"type\": {\n    \"id\": 1,\n    \"name\": \"cat\"\n  }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/{{petId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pets", "{{petId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Pet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/{{petId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pets", "{{petId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pet Types",
+			"item": [
+				{
+					"name": "List Pet Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pettypes",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pettypes" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Pet Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('petTypeId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Pet type created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"hamster\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/pettypes",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pettypes" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pet Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pettypes/{{petTypeId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pettypes", "{{petTypeId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pet Type",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"hamster\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/pettypes/{{petTypeId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pettypes", "{{petTypeId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Pet Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pettypes/{{petTypeId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "pettypes", "{{petTypeId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vets",
+			"item": [
+				{
+					"name": "List Vets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vets",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "vets" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('vetId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Vet created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"James\",\n  \"lastName\": \"Carter\",\n  \"specialties\": []\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vets",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "vets" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vet by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vets/{{vetId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "vets", "{{vetId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"James\",\n  \"lastName\": \"Carter\",\n  \"specialties\": []\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vets/{{vetId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "vets", "{{vetId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vets/{{vetId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "vets", "{{vetId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Visits",
+			"item": [
+				{
+					"name": "List Visits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/visits",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "visits" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Visit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('visitId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Visit created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"petId\": {{petId}},\n  \"date\": \"2024-03-15\",\n  \"description\": \"General checkup\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/visits",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "visits" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Visit by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/visits/{{visitId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "visits", "{{visitId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Visit",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"petId\": {{petId}},\n  \"date\": \"2024-03-20\",\n  \"description\": \"Follow-up visit\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/visits/{{visitId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "visits", "{{visitId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Visit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/visits/{{visitId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "visits", "{{visitId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Specialties",
+			"item": [
+				{
+					"name": "List Specialties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/specialties",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "specialties" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Specialty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code < 300) {",
+									"    const json = pm.response.json();",
+									"    if (json.id !== undefined) {",
+									"        pm.environment.set('specialtyId', json.id);",
+									"    }",
+									"}",
+									"pm.test('Specialty created', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"radiology\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/specialties",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "specialties" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specialty by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/specialties/{{specialtyId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "specialties", "{{specialtyId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Specialty",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"radiology\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/specialties/{{specialtyId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "specialties", "{{specialtyId}}" ]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Specialty",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/specialties/{{specialtyId}}",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "specialties", "{{specialtyId}}" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"1234abc\",\n  \"enabled\": true,\n  \"roles\": [\n    { \"name\": \"OWNER_ADMIN\" }\n  ]\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "users" ]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Misc",
+			"item": [
+				{
+					"name": "Always Fails (error handling demo)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/oops",
+							"host": [ "{{baseUrl}}" ],
+							"path": [ "api", "oops" ]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
