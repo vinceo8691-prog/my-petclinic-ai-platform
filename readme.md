@@ -14,7 +14,7 @@ This is the first of three planned pieces of a larger platform:
 
 ## Tech Stack
 
-- Java 17+, Spring Boot 4, Spring MVC, Spring Data JPA, Spring Security
+- Java 25, Spring Boot 4, Spring MVC, Spring Data JPA, Spring Security
 - H2 / HSQLDB / MySQL / PostgreSQL (swappable via Spring profile)
 - MapStruct (entity ⇄ DTO mapping), OpenAPI Generator (contract-first DTOs/API interfaces)
 - springdoc-openapi (Swagger UI), JaCoCo (coverage gate), Jib (container image build)
