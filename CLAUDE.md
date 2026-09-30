@@ -1,0 +1,44 @@
+# PetClinic AI Platform
+
+## Architecture
+
+The system consists of three primary applications:
+
+- petclinic-api — Spring Boot REST backend
+- petclinic-ui — React/TypeScript frontend
+- petclinic-ai-agent — Spring Boot AI agent
+
+## Architecture Rules
+
+- The AI Agent never accesses the PetClinic database directly.
+- PetClinic owns business data.
+- The AI Agent accesses PetClinic through REST APIs.
+- React communicates with both PetClinic and the AI Agent.
+- AI-initiated writes require human confirmation.
+
+## Technology
+
+Backend:
+- Java 25
+- Spring Boot
+- Spring Data JPA
+
+Frontend:
+- React
+- TypeScript
+
+Infrastructure:
+- AWS
+- ECS/Fargate
+- RDS
+- CloudFront/S3
+- Secrets Manager
+- Parameter Store
+- CloudWatch
+
+## Development Guidelines
+
+- Prefer straightforward architecture over unnecessary abstraction.
+- Explain significant architectural changes before implementing them.
+- Add tests for new functionality.
+- Do not introduce new dependencies without explaining why.
