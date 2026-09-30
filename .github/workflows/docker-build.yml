@@ -1,9 +1,11 @@
 ---
+# Requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets configured in this
+# repo's Settings > Secrets and variables > Actions before this will succeed.
 name: Build to Docker Hub
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
