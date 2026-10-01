@@ -16,7 +16,8 @@ import org.springframework.samples.petclinic.rest.controller.v2.PetRestControlle
 import org.springframework.samples.petclinic.rest.dto.OwnerDto;
 import org.springframework.samples.petclinic.rest.dto.PetDto;
 import org.springframework.samples.petclinic.rest.dto.PetTypeDto;
-import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.samples.petclinic.service.OwnerService;
+import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.clinicService.ApplicationTestConfig;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,7 +52,10 @@ public class V2RestControllersTests {
     private PetMapper petMapper;
 
     @MockitoBean
-    private ClinicService clinicService;
+    private OwnerService ownerService;
+
+    @MockitoBean
+    private PetService petService;
 
     private MockMvc mockMvc;
 
@@ -98,7 +102,7 @@ public class V2RestControllersTests {
     void testGetOwnersPageSuccess() throws Exception {
         var pageRequest = PageRequest.of(0, 2, Sort.by("id"));
         var pageOwners = ownerMapper.toOwners(owners.subList(0, 2)).stream().toList();
-        given(this.clinicService.findOwners(null, pageRequest))
+        given(this.ownerService.findOwners(null, pageRequest))
             .willReturn(new PageImpl<>(pageOwners, pageRequest, owners.size()));
         this.mockMvc.perform(get("/api/v2/owners?page=0&size=2")
                 .accept(MediaType.APPLICATION_JSON))
@@ -119,7 +123,7 @@ public class V2RestControllersTests {
     void testGetPetsPageSuccess() throws Exception {
         var pageRequest = PageRequest.of(0, 5, Sort.by("id"));
         var pagePets = petMapper.toPets(pets).stream().toList();
-        given(this.clinicService.findPets(pageRequest))
+        given(this.petService.findPets(pageRequest))
             .willReturn(new PageImpl<>(pagePets, pageRequest, pets.size()));
         this.mockMvc.perform(get("/api/v2/pets?page=0&size=5")
                 .accept(MediaType.APPLICATION_JSON))

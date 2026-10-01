@@ -9,7 +9,7 @@ import org.springframework.samples.petclinic.mapper.OwnerMapper;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.rest.api.OwnerV2Api;
 import org.springframework.samples.petclinic.rest.dto.OwnerPageDto;
-import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api")
 public class OwnerRestControllerV2 implements OwnerV2Api {
 
-    private final ClinicService clinicService;
+    private final OwnerService ownerService;
     private final OwnerMapper ownerMapper;
 
-    public OwnerRestControllerV2(ClinicService clinicService, OwnerMapper ownerMapper) {
-        this.clinicService = clinicService;
+    public OwnerRestControllerV2(OwnerService ownerService, OwnerMapper ownerMapper) {
+        this.ownerService = ownerService;
         this.ownerMapper = ownerMapper;
     }
 
@@ -33,7 +33,7 @@ public class OwnerRestControllerV2 implements OwnerV2Api {
     public ResponseEntity<OwnerPageDto> listOwnersPage(String lastName, Integer page, Integer size) {
         int pageNumber = page == null ? 0 : page;
         int pageSize = size == null ? 20 : size;
-        Page<Owner> owners = this.clinicService.findOwners(
+        Page<Owner> owners = this.ownerService.findOwners(
             lastName,
             PageRequest.of(pageNumber, pageSize, Sort.by("id")));
         return new ResponseEntity<>(ownerMapper.toOwnerPageDto(owners), HttpStatus.OK);
