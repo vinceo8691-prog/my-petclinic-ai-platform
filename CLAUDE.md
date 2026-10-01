@@ -4,7 +4,7 @@
 
 The system consists of three primary applications:
 
-- petclinic-api — Spring Boot REST backend
+- spring-petclinic-rest — Spring Boot REST backend
 - petclinic-ui — React/TypeScript frontend
 - petclinic-ai-agent — Spring Boot AI agent
 
@@ -19,7 +19,7 @@ The system consists of three primary applications:
 ## Technology
 
 Backend:
-- Java 25
+- Java
 - Spring Boot
 - Spring Data JPA
 

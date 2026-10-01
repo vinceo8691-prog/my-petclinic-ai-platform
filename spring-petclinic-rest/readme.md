@@ -36,7 +36,7 @@ cd petclinic-ai-platform
 Build and run a local image (no image is currently published to a registry for this fork):
 ```sh
 ./mvnw compile jib:dockerBuild
-docker run -p 9966:9966 vinceo8691/petclinic-api
+docker run -p 9966:9966 vinceo8691/spring-petclinic-rest
 ```
 
 You can then access petclinic here: [http://localhost:9966/petclinic/](http://localhost:9966/petclinic/)
