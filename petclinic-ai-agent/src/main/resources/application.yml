@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: petclinic-ai-agent
+
+server:
+  port: 8081
+
+petclinic:
+  api:
+    base-url: http://localhost:9966/petclinic/api
